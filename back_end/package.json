@@ -12,7 +12,6 @@
     },
     "type": "module",
     "dependencies": {
-        "cookie-parser": "^1.4.7",
         "bcrypt": "^6.0.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.6",
@@ -25,7 +24,6 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
-        "@types/cookie-parser": "^1.4.10",
         "postgres": "^3.4.8",
         "zod": "^4.3.6",
         "@types/bcrypt": "^6.0.0",
