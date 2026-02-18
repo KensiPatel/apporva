@@ -43,3 +43,42 @@ export async function findTeamByName(name: string): Promise<{ id: number } | nul
 
   return result[0] ?? null;
 }
+import { db } from "../db.client";
+import { team } from "../schema/team";
+import { user } from "../schema/user";
+import { eq } from "drizzle-orm";
+import { teamMember } from "../schema/team-member"
+
+
+export const findTeamById = async (teamId: number) => {
+  
+  const database = db();
+
+  return await database
+    .select()
+    .from(team)
+    .where(eq(team.id, teamId));
+};
+
+export const removeTeamFromUsers = async (teamId: number) => {
+  
+  const database = db();
+
+  return await database
+    .delete(teamMember)
+    .where(eq(teamMember.teamId, teamId));
+};
+
+
+export const deleteTeamById = async (teamId: number) => {
+  
+  const database = db();
+
+  await database
+    .delete(teamMember)
+    .where(eq(teamMember.teamId, teamId));
+
+  return await database
+    .delete(team)
+    .where(eq(team.id, teamId));
+};
