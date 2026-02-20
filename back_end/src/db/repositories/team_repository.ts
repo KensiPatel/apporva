@@ -3,6 +3,7 @@ import { db } from "../db.client";
 import { team } from "../schema/team";
 import { eq } from "drizzle-orm";
 import { users } from "../schema/user";
+import { teamMember } from "../schema/team-member"
 
 export async function createTeam(input: CreateTeamInput): Promise<void> {
   const { name, managerId, userId } = input;
@@ -43,27 +44,10 @@ export async function findTeamByName(name: string): Promise<{ id: number } | nul
 
   return result[0] ?? null;
 }
-import { db } from "../db.client";
-import { team } from "../schema/team";
 
-import { eq } from "drizzle-orm";
-import { teamMember } from "../schema/team-member"
-
-
-export const findTeamById = async (teamId: number) => {
-  
-  const database = db();
-
-  return await database
-    .select()
-    .from(team)
-    .where(eq(team.id, teamId));
-};
 
 export const removeTeamFromUsers = async (teamId: number) => {
-  
   const database = db();
-
   return await database
     .delete(teamMember)
     .where(eq(teamMember.teamId, teamId));
@@ -71,9 +55,7 @@ export const removeTeamFromUsers = async (teamId: number) => {
 
 
 export const deleteTeamById = async (teamId: number) => {
-  
   const database = db();
-
   return await database
     .delete(team)
     .where(eq(team.id, teamId));
