@@ -46,17 +46,19 @@ export async function findTeamByName(name: string): Promise<{ id: number } | nul
 }
 
 
-export const removeTeamFromUsers = async (teamId: number) => {
+export const removeTeamFromUsers = async (teamId: number): Promise<any> => {
   const database = db();
-  return await database
+  const result = await database
     .delete(teamMember)
     .where(eq(teamMember.teamId, teamId));
+  return Promise.resolve(result);
 };
 
-
-export const deleteTeamById = async (teamId: number) => {
+export const deleteTeamById = async (teamId: number): Promise<any> => {
   const database = db();
-  return await database
+  const result = await database
     .delete(team)
     .where(eq(team.id, teamId));
+  return Promise.resolve(result);
 };
+
