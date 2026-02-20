@@ -3,6 +3,7 @@ import { authMiddleware } from "../middleware/auth-middleware";
 import { z } from "zod";
 import { role } from "../types/user.type";
 import { createTeamService } from "../services/teamService";
+import { deleteTeam } from "../services/team_service";
 
 const router = Router();
 
@@ -51,5 +52,19 @@ router.post("/", authMiddleware(role.admin), async (req, res: Response) => {
     return res.status(500).json({ message: "Failed to create team" });
   }
 });
+
+router.delete(
+  "/:teamId",
+  authMiddleware(),
+  async (req, res) => {
+    try {
+      const teamId = Number(req.params.teamId);
+      const result = await deleteTeam(teamId);
+      return res.status(200).json(result);
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
+);
 
 export default router;
