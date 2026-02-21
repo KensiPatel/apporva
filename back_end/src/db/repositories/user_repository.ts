@@ -48,3 +48,23 @@ export async function createUser(data: {
         );
     }
 }
+
+export async function updateUserById(
+  id: number,
+  data: {
+    fullName?: string;
+    password?: string;
+  }
+) {
+  try {
+    await db()
+      .update(user)
+      .set(data)
+      .where(eq(user.id, id));
+
+  } catch (error: any) {
+    throw new Error(
+      `[Database Error] Failed to update user: ${error.message}`
+    );
+  }
+}
