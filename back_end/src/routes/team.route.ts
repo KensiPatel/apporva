@@ -3,7 +3,7 @@ import { authMiddleware } from "../middleware/auth-middleware";
 import { z } from "zod";
 import { role } from "../types/user.type";
 import { createTeamService } from "../services/teamService";
-import { deleteTeam } from "../services/team_service";
+import { deleteTeamById } from "../services/teamService";
 
 const router = Router();
 
@@ -53,18 +53,17 @@ router.post("/", authMiddleware(role.admin), async (req, res: Response) => {
   }
 });
 
-router.delete(
-  "/:teamId",
-  authMiddleware(),
-  async (req, res) => {
-    try {
-      const teamId = Number(req.params.teamId);
-      const result = await deleteTeam(teamId);
-      return res.status(200).json(result);
-    } catch (error: any) {
-      return res.status(400).json({ message: error.message });
+router.delete("/delete/:id", authMiddleware(role.admin), async (req, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid team id" });
     }
+    await deleteTeamById(id);
+    res.status(200).json({ message: "Team deleted successfully" });
+  } catch (error: any) {
+    res.status(404).json({ message: error.message });
   }
-);
+});
 
 export default router;

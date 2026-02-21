@@ -5,7 +5,8 @@ import {
   findUserById,
 } from "../db/repositories/team_repository";
 import { CreateTeamInput } from "src/types/team.type";
-import * as teamRepo from "../db/repositories/team_repository";
+import { deleteTeam, findTeamById} from "../db/repositories/team_repository";
+
 export async function createTeamService(input: CreateTeamInput) {
   const { name, managerId, userId } = input;
 
@@ -34,14 +35,10 @@ export async function createTeamService(input: CreateTeamInput) {
   return;
 }
 
-export const deleteTeam = async (teamId: number) => {
-  const team = await teamRepo.findTeamById(teamId);
-
-  if (!team.length) {
+export async function deleteTeamById(id: number): Promise<void> {
+  const existingTeam = await findTeamById(id);
+  if (!existingTeam) {
     throw new Error("Team not found");
   }
-
-  await teamRepo.deleteTeamById(teamId);
-
-  return { message: "Team deleted successfully" };
-};
+  await deleteTeam(id);
+}
