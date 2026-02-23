@@ -3,7 +3,6 @@ import { db } from "../db.client";
 import { team } from "../schema/team";
 import { eq } from "drizzle-orm";
 import { users } from "../schema/user";
-import { teamMember } from "../schema/team-member"
 
 export async function createTeam(input: CreateTeamInput): Promise<void> {
   const { name, managerId, userId } = input;
@@ -39,36 +38,22 @@ export async function findTeamByName(name: string): Promise<{ id: number } | nul
 }
 
 
-export const findTeamById = async (id: number): Promise<any> => {
+export const findTeamById = async (id: number): Promise<{id: number}> => {
   const database = db();
   const result = await database
     .select()
     .from(team)
     .where(eq(team.id, id));
-  return Promise.resolve(result[0] ?? null);
+  return result[0] ?? null;
 };
 
-export const deleteTeam = async (id: number): Promise<any> => {
-  const database = db();
-  const result = await database
+export const deleteTeam = async (id: number): Promise<number> => {
+  const deleted = await db()
     .delete(team)
-    .where(eq(team.id, id));
-  return Promise.resolve(result);
+    .where(eq(team.id, id))
+  return deleted.length;
 };
 
-export const removeTeamFromUsers = async (teamId: number): Promise<any> => {
-  const database = db();
-  const result = await database
-    .delete(teamMember)
-    .where(eq(teamMember.teamId, teamId));
-  return Promise.resolve(result);
-};
 
-export const deleteTeamById = async (teamId: number): Promise<any> => {
-  const database = db();
-  const result = await database
-    .delete(team)
-    .where(eq(team.id, teamId));
-  return Promise.resolve(result);
-};
+
 

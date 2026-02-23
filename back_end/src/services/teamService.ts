@@ -36,9 +36,9 @@ export async function createTeamService(input: CreateTeamInput) {
 }
 
 export async function deleteTeamById(id: number): Promise<void> {
-  const existingTeam = await findTeamById(id);
-  if (!existingTeam) {
+  const deletedCount = await deleteTeam(id);
+  if (deletedCount === 0) {
     throw new Error("Team not found");
   }
-  await deleteTeam(id);
 }
+
