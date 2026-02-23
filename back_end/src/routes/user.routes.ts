@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { authMiddleware } from "../middleware/auth-middleware";
 import { updateProfile } from "../services/userService";
+import { Request, Response } from "express";
 
 const router = Router();
 
@@ -12,8 +13,8 @@ const updateSchema = z.object({
 
 router.patch(
   "/profile",
-  authMiddleware,
-  async (req: any, res) => {
+  authMiddleware(),
+  async (req: Request, res:Response) => {
     try {
       const data = updateSchema.parse(req.body);
 

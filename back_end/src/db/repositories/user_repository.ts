@@ -58,9 +58,9 @@ export async function updateUserById(
 ) {
   try {
     await db()
-      .update(user)
+      .update(users)
       .set(data)
-      .where(eq(user.id, id));
+      .where(eq(users.id, id));
 
   } catch (error: any) {
     throw new Error(
