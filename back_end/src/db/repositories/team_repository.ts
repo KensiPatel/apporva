@@ -37,16 +37,6 @@ export async function findTeamByName(name: string): Promise<{ id: number } | nul
   return result[0] ?? null;
 }
 
-
-export const findTeamById = async (id: number): Promise<{id: number}> => {
-  const database = db();
-  const result = await database
-    .select()
-    .from(team)
-    .where(eq(team.id, id));
-  return result[0] ?? null;
-};
-
 export const deleteTeam = async (id: number): Promise<number> => {
   const deleted = await db()
     .delete(team)
