@@ -51,9 +51,6 @@ export const deleteTeam = async (id: number): Promise<number> => {
   const deleted = await db()
     .delete(team)
     .where(eq(team.id, id))
+    .returning({id: team.id})
   return deleted.length;
 };
-
-
-
-
