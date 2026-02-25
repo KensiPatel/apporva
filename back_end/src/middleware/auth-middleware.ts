@@ -8,35 +8,30 @@ const roleLevel: Record<Role, number> = {
   admin: 2,
 };
 
-/**
- * Auth middleware with optional role requirement.
- *
- * Usage:
- * app.get("/admin", authMiddleware(role.admin), handler);
- * app.get("/manager", authMiddleware(role.manager), handler);
- * app.get("/protected", authMiddleware(), handler);
- *
- * Responses:
- * 401 if unauthenticated.
- * 403 if authenticated but role is insufficient.
- */
-
-export function authMiddleware(role?: Role) {
+export function authMiddleware(requiredRole?: Role) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.auth_token;
+    const token = req.cookies?.auth_token;
 
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
-      const decoded = verifyToken(token);
-      req.user = {
-        id: decoded.id,
-        role: decoded.role as Role,
+      const decoded = verifyToken(token) as {
+        id: number;
+        role: Role;
       };
 
-      if (role && roleLevel[req.user.role] < roleLevel[role]) {
+      // attach user safely using type assertion
+      (req as any).user = {
+        id: decoded.id,
+        role: decoded.role,
+      };
+
+      if (
+        requiredRole &&
+        roleLevel[decoded.role] < roleLevel[requiredRole]
+      ) {
         return res.status(403).json({ message: "Forbidden" });
       }
 
