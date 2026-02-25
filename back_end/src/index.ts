@@ -5,7 +5,7 @@ import cors from "cors";
 import { env } from "./config/env";
 import userRoutes from "./routes/user.routes";
 import cookieParser from "cookie-parser";
-import MyProfile from "./routes/user.route";
+import MyProfile from "./routes/user.routes";
 
 const app = express();
 

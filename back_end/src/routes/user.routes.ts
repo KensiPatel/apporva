@@ -2,8 +2,50 @@ import { Router, Request, Response } from "express";
 import { z, ZodError } from "zod";
 import { authMiddleware } from "../middleware/auth-middleware";
 import { updateProfile } from "../services/userService";
+import { removeMemberService } from "../services/removeMemberService";
 
 const router = Router();
+router.get("/", authMiddleware(), (req: Request, res: Response) => {
+  const user = req.user;
+
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+router.delete(
+  "/remove/:id",
+  authMiddleware(),
+  async (req, res) => {
+    try {
+      const targetId = Number(req.params.id);
+      const { newManagerId } = req.body || {};
+
+      if (isNaN(targetId)) {
+        return res.status(400).json({ message: "Invalid user id" });
+      }
+
+      await removeMemberService(
+        req.user.id,
+        targetId,
+        newManagerId
+      );
+
+      return res.status(200).json({
+        message: "Member removed successfully",
+      });
+    } catch (err: any) {
+      if (err.message === "Unauthorized") {
+        return res.status(403).json({ message: err.message });
+      }
+
+      return res.status(400).json({
+        message: err.message,
+      });
+    }
+  }
+);
 
 const updateSchema = z.object({
   fullName: z.string().min(1).optional(),
