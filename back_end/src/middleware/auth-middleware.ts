@@ -8,7 +8,7 @@ const roleLevel: Record<Role, number> = {
   admin: 2,
 };
 
-export function authMiddleware(requiredRole?: Role) {
+export function authMiddleware(role?: Role) {
   return (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.auth_token;
 
@@ -29,8 +29,8 @@ export function authMiddleware(requiredRole?: Role) {
       };
 
       if (
-        requiredRole &&
-        roleLevel[decoded.role] < roleLevel[requiredRole]
+        role &&
+        roleLevel[decoded.role] < roleLevel[role]
       ) {
         return res.status(403).json({ message: "Forbidden" });
       }
