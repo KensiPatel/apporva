@@ -6,11 +6,11 @@ import { Role } from "src/types/user.type";
 
 export async function findUserByEmail(email: string): Promise<
   | {
-      id: number;
-      email: string;
-      password: string;
-      role: Role;
-    }
+    id: number;
+    email: string;
+    password: string;
+    role: Role;
+  }
   | null
 > {
   const result = await db()
