@@ -27,26 +27,24 @@ export async function findUserByEmail(email: string): Promise<
 }
 
 export async function createUser(data: {
-  fullName: string;
-  email: string;
-  password: string;
-  role: UserRole;
+    fullName: string;
+    email: string;
+    password: string;
 }): Promise<void> {
-  try {
-    await db()
-      .insert(users)
-      .values({
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password,
-        role: data.role,
-      })
-      .returning();
-  } catch (error: any) {
-    throw new Error(
-      `[Database Error] Failed to create user: ${error.message}`
-    );
-  }
+    try {
+        await db()
+            .insert(users)
+            .values({
+                fullName: data.fullName,
+                email: data.email,
+                password: data.password,
+            })
+            .returning();
+    } catch (error: any) {
+        throw new Error(
+            `[Database Error] Failed to create user: ${error.message}`,
+        );
+    }
 }
 
 export async function updateUserById(
