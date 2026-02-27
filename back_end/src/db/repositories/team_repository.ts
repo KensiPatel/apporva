@@ -91,7 +91,7 @@ export async function findTeamById(teamId: number) {
   return result[0] || null;
 }
 
-export async function updateTeamManager(teamId: number, newManagerId: number) {
+export async function updateTeamManager(teamId: number, newManagerId: number | null) {
   await db()
     .update(team)
     .set({ managerId: newManagerId })

@@ -29,7 +29,6 @@ router.delete(
       await removeMemberService(
         req.user.id,
         targetId,
-        newManagerId
       );
 
       return res.status(200).json({
