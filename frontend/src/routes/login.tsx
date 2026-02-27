@@ -4,7 +4,9 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-
+import { useMutation } from "@tanstack/react-query"
+import { signinUser } from "@/lib/api"
+import { useNavigate } from "@tanstack/react-router"
 
 export const Route = createFileRoute('/login')({
   component: RouteComponent,
@@ -13,11 +15,20 @@ export const Route = createFileRoute('/login')({
 function RouteComponent() {
   const[email,setEmail]= useState("")
   const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const mutation = useMutation({
+  mutationFn: signinUser,
+  onSuccess: () => {
+    navigate({ to: "/" }) // redirect after login
+  },
+  onError: (error: any) => {
+    console.error("Login failed:", error.message)
+  },
+})
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Email:", email)
-    console.log("Password:", password)
+    mutation.mutate({ email, password })
   }
 
   return (
@@ -48,9 +59,15 @@ function RouteComponent() {
               required
             />            
           </div>
+          {mutation.isError && (
+            <p className="text-sm text-red-500">
+              {(mutation.error as any)?.message}
+              </p>
+          )}
 
-          <Button type="submit" className="w-full">
-            Sign In
+
+          <Button type="submit" className="w-full" disabled={mutation.isPending}>
+            {mutation.isPending ? "Signing in...":"Sign In"}
           </Button>
 
         </form>
