@@ -32,6 +32,7 @@ function RouteComponent() {
   }
 
   return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
     <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>Login</CardTitle>
@@ -73,5 +74,6 @@ function RouteComponent() {
         </form>
       </CardContent>
     </Card>
+  </div>
   )
 }
