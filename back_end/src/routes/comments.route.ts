@@ -1,7 +1,7 @@
 import { Router, type Response } from "express";
 import { authMiddleware } from "../middleware/auth-middleware";
 import { z } from "zod";
-import { addCommentService, getCommentsService } from "src/services/commentsService";
+import { addCommentService, getCommentsService } from "src/services/commenstService";
 
 const router = Router();
 const commentBodySchema = z.object({

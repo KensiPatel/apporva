@@ -1,6 +1,6 @@
 import { db } from "../db.client";
 import { comment } from "../schema/comment";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 export interface CreateCommentInput {
   expenseId: number;
@@ -28,7 +28,8 @@ export async function getCommentsByExpenseId(expenseId: number): Promise<
   const result = await db()
     .select()
     .from(comment)
-    .where(eq(comment.expenseId, expenseId));
+    .where(eq(comment.expenseId, expenseId))
+    .orderBy(asc(comment.createdAt));
 
   return result;
 }
