@@ -7,22 +7,25 @@ import { Button } from "@/components/ui/button"
 import { useMutation } from "@tanstack/react-query"
 import { signinUser } from "@/lib/api"
 import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { Eye, EyeOff } from "lucide-react"
 
 export const Route = createFileRoute('/login')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const [showPassword, setShowPassword] = useState(false)
   const[email,setEmail]= useState("")
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
   const mutation = useMutation({
   mutationFn: signinUser,
   onSuccess: () => {
-    navigate({ to: "/" }) // redirect after login
+    navigate({ to: "/" })
   },
   onError: (error: any) => {
-    console.error("Login failed:", error.message)
+    toast.error(error.message)
   },
 })
 
@@ -40,7 +43,7 @@ function RouteComponent() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Email</Label>
             <Input
               type="email"
@@ -50,16 +53,28 @@ function RouteComponent() {
               required
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Password</Label>
-            <Input
-              type="password"
+
+            <div className="relative">
+              <Input
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-            />            
+              className="pr-10"
+              />
+              
+              <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
           </div>
+        </div>
           {mutation.isError && (
             <p className="text-sm text-red-500">
               {(mutation.error as any)?.message}

@@ -1,64 +1,46 @@
-const BASE_URL = "http://localhost:8080"
+import axios from "axios"
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
+})
 
 export async function signinUser(data: {
   email: string
   password: string
 }) {
-  const response = await fetch(`${BASE_URL}/auth/signin`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    credentials: "include",
-  })
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || "Login failed")
+  try {
+    const response = await api.post("/auth/signin", data)
+    return response.data
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Invalid email or password"
+    )
   }
-
-  return response.json()
 }
 
 export async function getMe() {
-  const response = await fetch(`${BASE_URL}/me`, {
-    credentials: "include",
-  })
-  if (!response.ok) {
-    throw new Error("Not authenticated")
-  }
-  return response.json()
+  const response = await api.get("/user")
+  return response.data
 }
 
 export async function logoutUser() {
-  const response = await fetch(`${BASE_URL}/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  })
-  if (!response.ok) {
-    throw new Error("Logout failed")
-  }
-  return response.json()
+  const response = await api.post("/auth/logout")
+  return response.data
 }
 
 export async function signupUser(data: {
   fullName: string
   email: string
   password: string
-}) {
-  const response = await fetch(`${BASE_URL}/auth/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.message || "Signup failed")
+})  {
+  try {
+    const response = await api.post("/auth/signin", data)
+    return response.data
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Signup failed"
+    )
   }
-
-  return response.json()
 }

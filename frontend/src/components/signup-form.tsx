@@ -18,6 +18,14 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import {z} from "zod"
+
+const signupSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email").endsWith("@projectapprova.com"),
+  password: z.string().min(8, "Password must be at least 8 characters")
+})
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate()
@@ -25,7 +33,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 const [fullName, setFullName] = useState("")
 const [email, setEmail] = useState("")
 const [password, setPassword] = useState("")
-const [confirmPassword, setConfirmPassword] = useState("")
+
 
 const mutation = useMutation<
   unknown,
@@ -36,15 +44,21 @@ const mutation = useMutation<
   onSuccess: () => {
     navigate({ to: "/login" })
   },
-  onError: (error) => {
-    console.error("Signup failed:", error.message)
+  onError: (error:any) => {
+    toast.error(error.message)
   },
 })
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
 
-  if (password !== confirmPassword) {
-    alert("Passwords do not match")
+  const result = signupSchema.safeParse({
+    fullName,
+    email,
+    password,
+  })
+
+  if (!result.success) {
+    toast.error(result.error.issues[0].message)
     return
   }
 
@@ -81,15 +95,11 @@ return (
               <Input
                 id="email"
                 type="email"
-                placeholder="xyz@projectapprova.com"
+                placeholder="name@projectapprova.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
-              </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -104,24 +114,6 @@ return (
                 Must be at least 8 characters long.
               </FieldDescription>
             </Field>
-            <Field>
-              <FieldLabel htmlFor="confirm-password">
-                Confirm Password
-              </FieldLabel>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <FieldDescription>Please confirm your password.</FieldDescription>
-            </Field>
-            {mutation.isError && (
-              <p className="text-sm mt-2 text-red-500">
-                {(mutation.error as Error).message}
-              </p>
-            )}
             <FieldGroup>
               <Field>
                 <Button type="submit" disabled={mutation.isPending}>
