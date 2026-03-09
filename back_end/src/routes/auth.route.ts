@@ -22,6 +22,8 @@ router.post("/signup", async (req, res) => {
       message: "Signup Successful",
     });
   } catch (err: any) {
+    console.error("Signup Error:", err);
+    
     if (err instanceof z.ZodError) {
       return res.status(400).json({
         message: "Invalid input",
@@ -73,4 +75,12 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+router.post("/logout", (_req, res) => {
+  res.clearCookie("auth_token");
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
 export default router;
