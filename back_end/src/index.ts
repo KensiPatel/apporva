@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import MyProfile from "./routes/user.route";
 import changeRole from "./routes/user.route";
 import expense from "./routes/expense.route";
+import userRoutes from "./routes/user.route";
+
 const app = express();
 
 app.use(express.json());
@@ -14,7 +16,7 @@ app.use(cookieParser());
 app.use(
     cors({
         origin: env.ALLOWED_ORIGIN,
-        methods: ["GET", "POST", "DELETE"],
+        methods: ["GET", "POST", "PATCH", "DELETE"],
         credentials: true,
     }),
 );
@@ -24,6 +26,8 @@ app.use("/team", Team);
 app.use("/me", MyProfile);
 app.use("/role", changeRole);
 app.use("/expense", expense);
+app.use("/user", userRoutes);
+
 app.get("/", (_req: Request, res: Response) => {
     res.json("i am alive!");
 });
@@ -31,5 +35,5 @@ app.get("/", (_req: Request, res: Response) => {
 app.listen(env.PORT, () => {
     console.log(`Server is running on port ${env.PORT}`);
 });
-    
+
 
